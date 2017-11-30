@@ -589,7 +589,11 @@ class Url
 	 * @throws \DomainException
 	 * @return string
 	 */
+<<<<<<< HEAD
 	public function getUrl()
+=======
+	public function toString()
+>>>>>>> branch 'master' of https://github.com/timostamm/url-builder.git
 	{
 		if (! $this->isValid()) {
 			throw new InvalidUrlException('Url is invalid.');
