@@ -1,0 +1,23 @@
+{
+	"autoload" : {
+		"psr-4" : {
+			"TS\\Web\\UrlBuilder\\" : "src"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"TS\\Web\\UrlBuilder\\" : "tests"
+		}
+	},
+	"name" : "timostamm/url-builder",
+	"type" : "library",
+	"description" : "An URL object to parse, manipulate or create URLs with a fluent interface",
+	"license" : "AGPL-3.0",
+	"require" : {
+		"php" : ">=5.6",
+		"timostamm/pathinfo": "dev-master"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "~6.3"
+	}
+}
