@@ -2,7 +2,9 @@
 
 An URL object to parse, manipulate or create URLs with a fluent interface.
 
-The class exposes all components of common Web URLs as public properties:
+Takes care of proper decoding / encoding of the path, query parameters and credentials. 
+
+The object exposes all components of common Web URLs as public properties:
 
 ```PHP
 $url = new Url('https://peter%40example.com:pass@domain.tld:8080/all+products/search?query=all#fragment');
@@ -74,7 +76,6 @@ Comparison:
 ```PHP
 $url->equals($otherUrl);
 $url->equals('/all+products/search', Url::PATH);
-=======
 ``` 
 
 URL manipulation:
@@ -86,7 +87,7 @@ $url->clear(Url::QUERY | Url::FRAGMENT); // remove only specific components
 
 // replace components with components from another URL
 $url->replace('http://example.com/index.html', Url::SCHEME);
-$url->replacePath('http://example.com/index.html');
+$url->replacePath('http://example.com/index.html'); // -> http://example.com
 
 $url = new Url('../styles/main.css');
 $url->makeAbsolutePath('http://domain.tld/products/search'); // -> /styles/main.css
@@ -132,10 +133,7 @@ Comparison:
 
 ```PHP
 $url->equals($otherUrl);
-
 $url->equals('/all+products/search', Url::PATH);
-
->>>>>>> branch 'master' of https://github.com/timostamm/url-builder.git
 $url->scheme->equals($otherUrl->scheme);
 ```
 
