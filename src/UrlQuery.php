@@ -65,9 +65,7 @@ class UrlQuery implements UrlComponentInterface, \Countable, \IteratorAggregate
 		foreach ($values as $v) {
 			$this->validateValue($v);
 		}
-		if (! $this->has($key)) {
-			$this->params[$key] = [];
-		}
+		$this->params[$key] = [];
 		foreach ($values as $v) {
 			$this->params[$key][] = $v;
 		}
