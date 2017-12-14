@@ -577,8 +577,12 @@ class Url
 		if ($this->isEmpty()) {
 			return false;
 		}
-		$requiresHost = ! $this->scheme->isEmpty() || ! $this->port->isEmpty() || ! $this->credentials->isEmpty();
+		$requiresHost = ! $this->port->isEmpty() || ! $this->credentials->isEmpty();
 		if ($requiresHost && $this->host->isEmpty()) {
+			return false;
+		}
+		$requiresPath = (! $this->query->isEmpty() || ! $this->fragment->isEmpty()) && (! $this->scheme->isEmpty() || ! $this->host->isEmpty() || ! $this->port->isEmpty() || ! $this->credentials->isEmpty());
+		if ($requiresPath && $this->path->isEmpty()) {
 			return false;
 		}
 		return true;
