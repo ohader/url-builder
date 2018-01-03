@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/timostamm/pathinfo.git",
-                "reference": "552220082172025100519df1c1622801fe39946b"
+                "reference": "eb769d85ad6104602f1a6b4708bfeffbbddf957f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/timostamm/pathinfo/zipball/552220082172025100519df1c1622801fe39946b",
-                "reference": "552220082172025100519df1c1622801fe39946b",
+                "url": "https://api.github.com/repos/timostamm/pathinfo/zipball/eb769d85ad6104602f1a6b4708bfeffbbddf957f",
+                "reference": "eb769d85ad6104602f1a6b4708bfeffbbddf957f",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
                 "pathinfo",
                 "relative path"
             ],
-            "time": "2017-11-30T10:26:27+00:00"
+            "time": "2018-01-03T06:11:49+00:00"
         }
     ],
     "packages-dev": [

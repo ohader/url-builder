@@ -207,7 +207,7 @@ class Url
 		}
 		if (! $this->path->isAbsolute()) {
 			$relPath = Path::info($this->path->get());
-			$baseDir = Path::info($baseUrl->path->get())->dir();
+			$baseDir = $baseUrl->path->isEmpty() ? '/' : Path::info($baseUrl->path->get())->dir();
 			$absPath = $relPath->abs($baseDir)->normalize();
 			$this->path->set($absPath);
 		}
@@ -650,7 +650,14 @@ class Url
 		if ($hasAfterPath && $this->path->isEmpty()) {
 			$parts[] = '/';
 		} else {
+			
+			// ensure triple slashes for file:// url
+			if ( ! $this->scheme->isEmpty() && false === in_array($this->scheme->get(), ['http', 'https', 'ftp', 'sftp', 'ssh']) ) {
+				$parts[] = '/';
+			}
+			
 			$parts[] = $this->path;
+			
 		}
 		
 		if (! $this->query->isEmpty()) {

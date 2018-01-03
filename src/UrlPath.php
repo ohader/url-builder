@@ -67,7 +67,10 @@ class UrlPath implements UrlComponentInterface
 	 */
 	public function get()
 	{
-		if (! is_null($this->url) && ! $this->url->host->isEmpty()) {
+		if (is_null($this->url)) {
+			return $this->path->get();
+		}
+		if (! $this->url->host->isEmpty()) {
 			return Path::info('/')->resolve($this->path)->get();
 		}
 		return $this->path->get();

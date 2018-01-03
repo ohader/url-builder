@@ -339,6 +339,16 @@ class UrlTest extends TestCase
 	}
 	
 	
+	public function testFileUrl()
+	{
+		$this->url
+			->replacePath('foo.jpeg')
+			->clearHost()
+			->scheme->set('file');
+		$this->assertEquals('file:///foo.jpeg', $this->url->__toString());
+	}
+	
+	
 
 	/**
 	 *
