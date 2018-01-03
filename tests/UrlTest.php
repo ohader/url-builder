@@ -346,6 +346,14 @@ class UrlTest extends TestCase
 			->clearHost()
 			->scheme->set('file');
 		$this->assertEquals('file:///foo.jpeg', $this->url->__toString());
+		
+		$u = new Url('file:///foo.jpeg');
+		$this->assertEquals('file:///foo.jpeg', $u->__toString());
+		$this->assertTrue($u->host->isEmpty());
+		$this->assertTrue($u->isAbsolute());
+		$this->assertFalse($u->scheme->isEmpty());
+		$this->assertFalse($u->path->isEmpty());
+		$this->assertEquals('/foo.jpeg', $u->path->get());
 	}
 	
 	

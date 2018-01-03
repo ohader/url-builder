@@ -8,63 +8,63 @@ use TS\Filesystem\Path;
 
 class Url
 {
-
+	
 	const SCHEME = 2;
-
+	
 	const HOST = 4;
-
+	
 	const PORT = 8;
-
+	
 	const CREDENTIALS = 16;
-
+	
 	const PATH = 32;
-
+	
 	const QUERY = 64;
-
+	
 	const FRAGMENT = 128;
-
+	
 	/**
 	 *
 	 * @var UrlScheme
 	 */
 	public $scheme;
-
+	
 	/**
 	 *
 	 * @var UrlHost
 	 */
 	public $host;
-
+	
 	/**
 	 *
 	 * @var UrlPort
 	 */
 	public $port;
-
+	
 	/**
 	 *
 	 * @var UrlCredentials
 	 */
 	public $credentials;
-
+	
 	/**
 	 *
 	 * @var UrlPath
 	 */
 	public $path;
-
+	
 	/**
 	 *
 	 * @var UrlQuery
 	 */
 	public $query;
-
+	
 	/**
 	 *
 	 * @var UrlFragment
 	 */
 	public $fragment;
-
+	
 	public function __construct($url = null)
 	{
 		$this->scheme = new UrlScheme();
@@ -78,7 +78,7 @@ class Url
 			$this->parseUrl($url);
 		}
 	}
-
+	
 	/**
 	 * Parses an URL.
 	 *
@@ -127,13 +127,13 @@ class Url
 	{
 		$components = parse_url($str);
 		if ($components === false) {
-			// parse_url() accepts host-less urls like file:///, but only for the file scheme. 
+			// parse_url() accepts host-less urls like file:///, but only for the file scheme.
 			if (preg_match('/^(.*):\/\//', $str, $ma) ) {
 				$scheme = isset($ma[1]) ? $ma[1] : null;
-				if ($scheme === 'http' || $scheme === 'https') {
+				if ( in_array($scheme, ['http', 'https', 'ftp', 'sftp', 'ssh']) ) {
 					throw new InvalidUrlException('Unable to parse URL.');
 				}
-				$w = substr($str, strlen($scheme) + 2);
+				$w = substr($str, strlen($scheme) + 3);
 				$components = parse_url('file://' . $w);
 				$components['scheme'] = $scheme;
 			} else {
@@ -142,7 +142,7 @@ class Url
 		}
 		return $components;
 	}
-
+	
 	/**
 	 * Returns true if the URL contains a host, false otherwise.
 	 *
@@ -153,9 +153,9 @@ class Url
 		if ($this->isEmpty()) {
 			return false;
 		}
-		return ! $this->host->isEmpty();
+		return ! $this->host->isEmpty() || ! $this->scheme->isEmpty();
 	}
-
+	
 	/**
 	 * Returns true if the URL is not empty and does not contain a host.
 	 *
@@ -168,7 +168,7 @@ class Url
 		}
 		return $this->host->isEmpty();
 	}
-
+	
 	/**
 	 * Makes the current relative URL absolute to the given base URL.
 	 *
@@ -218,7 +218,7 @@ class Url
 		$this->port->set($baseUrl->port);
 		return $this;
 	}
-
+	
 	/**
 	 * Makes the path of the current relative URL absolute to the given base URL.
 	 *
@@ -264,7 +264,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Returns true if all components are empty.
 	 *
@@ -274,7 +274,7 @@ class Url
 	{
 		return $this->scheme->isEmpty() && $this->host->isEmpty() && $this->path->isEmpty() && $this->port->isEmpty() && $this->credentials->isEmpty() && $this->query->isEmpty() && $this->fragment->isEmpty();
 	}
-
+	
 	/**
 	 * Clear all or only specific components.
 	 *
@@ -313,7 +313,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Clear components at the right, starting with the path.
 	 *
@@ -336,7 +336,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Clear components at the left, up to the path.
 	 *
@@ -363,7 +363,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Replaces all or specific components with the components of the given URL.
 	 *
@@ -412,7 +412,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Replaces the components left of the path with the components of the given URL.
 	 *
@@ -449,7 +449,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Replaces the components on the right side, starting with the path, with the components of the given URL.
 	 *
@@ -484,7 +484,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Replaces all or specific components with the components of the given URL,
 	 * but only for the components that are not empty in the given URL.
@@ -534,7 +534,7 @@ class Url
 		}
 		return $this;
 	}
-
+	
 	/**
 	 * Compare all or only specific components of this URL with another URL.
 	 *
@@ -582,7 +582,7 @@ class Url
 		}
 		return true;
 	}
-
+	
 	/**
 	 * If the URL is empty, it is invalid.
 	 * If the URL contains a component that requires a host, but the host is empty, it is invalid.
@@ -604,7 +604,7 @@ class Url
 		}
 		return true;
 	}
-
+	
 	/**
 	 *
 	 * @throws \DomainException
@@ -617,7 +617,7 @@ class Url
 		}
 		return $this->__toString();
 	}
-
+	
 	public function __toString()
 	{
 		$parts = [];
@@ -652,7 +652,7 @@ class Url
 		} else {
 			
 			// ensure triple slashes for file:// url
-			if ( ! $this->scheme->isEmpty() && false === in_array($this->scheme->get(), ['http', 'https', 'ftp', 'sftp', 'ssh']) ) {
+			if ( ! $this->path->isAbsolute() && ! $this->scheme->isEmpty() && false === in_array($this->scheme->get(), ['http', 'https', 'ftp', 'sftp', 'ssh']) ) {
 				$parts[] = '/';
 			}
 			
@@ -672,7 +672,7 @@ class Url
 		
 		return join('', $parts);
 	}
-
+	
 	/**
 	 *
 	 * @return Url a clone.
@@ -681,7 +681,7 @@ class Url
 	{
 		return clone $this;
 	}
-
+	
 	public function __clone()
 	{
 		$this->scheme = clone $this->scheme;
