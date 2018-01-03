@@ -97,10 +97,7 @@ class Url
 		if (trim($str, ' ') === '') {
 			throw new InvalidUrlException('Empty URL.');
 		}
-		$components = parse_url($str);
-		if ($components === false) {
-			throw new InvalidUrlException('Unable to parse URL.');
-		}
+		$components = $this->parseUrlComponents($str);
 		$components = array_replace([
 			'scheme' => '',
 			'host' => '',
@@ -124,6 +121,26 @@ class Url
 		$this->query->parseComponent($components['query']);
 		$this->fragment->parseComponent($components['fragment']);
 		return $this;
+	}
+	
+	private function parseUrlComponents($str)
+	{
+		$components = parse_url($str);
+		if ($components === false) {
+			// parse_url() accepts host-less urls like file:///, but only for the file scheme. 
+			if (preg_match('/^(.*):\/\//', $str, $ma) ) {
+				$scheme = isset($ma[1]) ? $ma[1] : null;
+				if ($scheme === 'http' || $scheme === 'https') {
+					throw new InvalidUrlException('Unable to parse URL.');
+				}
+				$w = substr($str, strlen($scheme) + 2);
+				$components = parse_url('file://' . $w);
+				$components['scheme'] = $scheme;
+			} else {
+				throw new InvalidUrlException('Unable to parse URL.');
+			}
+		}
+		return $components;
 	}
 
 	/**
@@ -577,7 +594,7 @@ class Url
 		if ($this->isEmpty()) {
 			return false;
 		}
-		$requiresHost = ! $this->port->isEmpty() || ! $this->credentials->isEmpty();
+		$requiresHost = ! $this->port->isEmpty() || ! $this->credentials->isEmpty() || $this->scheme->equals('http') || $this->scheme->equals('https');
 		if ($requiresHost && $this->host->isEmpty()) {
 			return false;
 		}

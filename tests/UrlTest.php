@@ -51,6 +51,9 @@ class UrlTest extends TestCase
 			'',
 			null,
 			'http:///',
+			'https:///',
+			'http://',
+			'https://',
 			' ',
 			'http://domain.tld/ foo'
 		];
@@ -68,7 +71,11 @@ class UrlTest extends TestCase
 	public function testParseValid()
 	{
 		$tests = [
+			'data-uri:///xyz', 
 			'//domain.tld/xx',
+			'file:///',
+			'custom:///',
+			'custom:///xyz',
 			'http://domain.tld/foo??x',
 			'http://domain.tld/foo?x'
 		];
