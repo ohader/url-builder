@@ -1,5 +1,8 @@
 # PHP URL Object
 
+[![Build Status](https://api.travis-ci.org/timostamm/url-builder.png)](https://travis-ci.org/url-builder)
+
+
 An URL object to parse, manipulate or create URLs with a fluent interface.
 
 Takes care of proper decoding / encoding of the path, query parameters and credentials. 
