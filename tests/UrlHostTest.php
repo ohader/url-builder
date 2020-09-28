@@ -39,7 +39,7 @@ class UrlHostTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->host = new UrlHost();
 	}
@@ -47,7 +47,7 @@ class UrlHostTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->host = null;
 	}

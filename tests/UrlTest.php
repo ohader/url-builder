@@ -367,7 +367,7 @@ class UrlTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->url = new Url(self::FULL_URL);
 	}
@@ -375,7 +375,7 @@ class UrlTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->url = null;
 	}

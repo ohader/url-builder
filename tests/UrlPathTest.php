@@ -189,7 +189,7 @@ class UrlPathTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->path = new UrlPath();
 	}
@@ -197,7 +197,7 @@ class UrlPathTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->path = null;
 	}

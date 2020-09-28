@@ -40,7 +40,7 @@ class UrlPortTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->port = new UrlPort();
 	}
@@ -48,7 +48,7 @@ class UrlPortTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->port = null;
 	}

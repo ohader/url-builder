@@ -195,7 +195,7 @@ class UrlQueryTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->query = new UrlQuery();
 	}
@@ -203,7 +203,7 @@ class UrlQueryTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->query = null;
 	}

@@ -39,7 +39,7 @@ class UrlSchemeTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->scheme = new UrlScheme();
 	}
@@ -47,7 +47,7 @@ class UrlSchemeTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->scheme = null;
 	}

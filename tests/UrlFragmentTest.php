@@ -39,7 +39,7 @@ class UrlFragmentTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->fragment = new UrlFragment();
 	}
@@ -47,7 +47,7 @@ class UrlFragmentTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->fragment = null;
 	}

@@ -51,7 +51,7 @@ class UrlCredentialsTest extends TestCase
 	/**
 	 * @before
 	 */
-	public function setup()
+	public function setup(): void
 	{
 		$this->credentials = new UrlCredentials();
 	}
@@ -59,7 +59,7 @@ class UrlCredentialsTest extends TestCase
 	/**
 	 * @after
 	 */
-	public function teardown()
+	public function teardown(): void
 	{
 		$this->credentials = null;
 	}
