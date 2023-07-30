@@ -8,63 +8,68 @@ use TS\Filesystem\Path;
 
 class Url
 {
-	
+
 	const SCHEME = 2;
-	
+
 	const HOST = 4;
-	
+
 	const PORT = 8;
-	
+
 	const CREDENTIALS = 16;
-	
+
 	const PATH = 32;
-	
+
 	const QUERY = 64;
-	
+
 	const FRAGMENT = 128;
-	
+
 	/**
 	 *
 	 * @var UrlScheme
 	 */
 	public $scheme;
-	
+
 	/**
 	 *
 	 * @var UrlHost
 	 */
 	public $host;
-	
+
 	/**
 	 *
 	 * @var UrlPort
 	 */
 	public $port;
-	
+
 	/**
 	 *
 	 * @var UrlCredentials
 	 */
 	public $credentials;
-	
+
 	/**
 	 *
 	 * @var UrlPath
 	 */
 	public $path;
-	
+
 	/**
 	 *
 	 * @var UrlQuery
 	 */
 	public $query;
-	
+
 	/**
 	 *
 	 * @var UrlFragment
 	 */
 	public $fragment;
-	
+
+    /**
+     * @var InvalidUrlException
+     */
+    public $parsingException = null;
+
 	public function __construct($url = null)
 	{
 		$this->scheme = new UrlScheme();
@@ -75,10 +80,14 @@ class Url
 		$this->query = new UrlQuery();
 		$this->fragment = new UrlFragment();
 		if (! is_null($url)) {
-			$this->parseUrl($url);
+            try {
+                $this->parseUrl($url);
+            } catch (InvalidUrlException $e) {
+                $this->parsingException = $e;
+            }
 		}
 	}
-	
+
 	/**
 	 * Parses an URL.
 	 *
@@ -122,7 +131,7 @@ class Url
 		$this->fragment->parseComponent($components['fragment']);
 		return $this;
 	}
-	
+
 	private function parseUrlComponents($str)
 	{
 		$components = parse_url($str);
@@ -142,7 +151,7 @@ class Url
 		}
 		return $components;
 	}
-	
+
 	/**
 	 * Returns true if the URL contains a host, false otherwise.
 	 *
@@ -155,7 +164,7 @@ class Url
 		}
 		return ! $this->host->isEmpty() || ! $this->scheme->isEmpty();
 	}
-	
+
 	/**
 	 * Returns true if the URL is not empty and does not contain a host.
 	 *
@@ -168,7 +177,7 @@ class Url
 		}
 		return $this->host->isEmpty();
 	}
-	
+
 	/**
 	 * Makes the current relative URL absolute to the given base URL.
 	 *
@@ -218,7 +227,7 @@ class Url
 		$this->port->set($baseUrl->port);
 		return $this;
 	}
-	
+
 	/**
 	 * Makes the path of the current relative URL absolute to the given base URL.
 	 *
@@ -264,7 +273,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Returns true if all components are empty.
 	 *
@@ -272,9 +281,17 @@ class Url
 	 */
 	public function isEmpty()
 	{
-		return $this->scheme->isEmpty() && $this->host->isEmpty() && $this->path->isEmpty() && $this->port->isEmpty() && $this->credentials->isEmpty() && $this->query->isEmpty() && $this->fragment->isEmpty();
+        // either there was an error, of all parts are empty
+		return $this->parsingException !== null
+            || $this->scheme->isEmpty()
+                && $this->host->isEmpty()
+                && $this->path->isEmpty()
+                && $this->port->isEmpty()
+                && $this->credentials->isEmpty()
+                && $this->query->isEmpty()
+                && $this->fragment->isEmpty();
 	}
-	
+
 	/**
 	 * Clear all or only specific components.
 	 *
@@ -313,7 +330,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Clear components at the right, starting with the path.
 	 *
@@ -336,7 +353,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Clear components at the left, up to the path.
 	 *
@@ -363,7 +380,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Replaces all or specific components with the components of the given URL.
 	 *
@@ -412,7 +429,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Replaces the components left of the path with the components of the given URL.
 	 *
@@ -449,7 +466,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Replaces the components on the right side, starting with the path, with the components of the given URL.
 	 *
@@ -484,7 +501,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Replaces all or specific components with the components of the given URL,
 	 * but only for the components that are not empty in the given URL.
@@ -534,7 +551,7 @@ class Url
 		}
 		return $this;
 	}
-	
+
 	/**
 	 * Compare all or only specific components of this URL with another URL.
 	 *
@@ -582,7 +599,7 @@ class Url
 		}
 		return true;
 	}
-	
+
 	/**
 	 * If the URL is empty, it is invalid.
 	 * If the URL contains a component that requires a host, but the host is empty, it is invalid.
@@ -604,7 +621,7 @@ class Url
 		}
 		return true;
 	}
-	
+
 	/**
 	 *
 	 * @throws \DomainException
@@ -617,62 +634,62 @@ class Url
 		}
 		return $this->__toString();
 	}
-	
+
 	public function __toString()
 	{
 		$parts = [];
-		
+
 		$hasBeforePath = ! $this->scheme->isEmpty() || ! $this->host->isEmpty() || ! $this->port->isEmpty() || ! $this->credentials->isEmpty();
 		$hasAfterPath = ! $this->query->isEmpty() || ! $this->fragment->isEmpty();
-		
+
 		if ($hasBeforePath) {
-			
+
 			if (! $this->scheme->isEmpty()) {
 				$parts[] = $this->scheme;
 				$parts[] = ':';
 			}
-			
+
 			$parts[] = '//';
-			
+
 			if (! $this->credentials->isEmpty()) {
 				$parts[] = $this->credentials;
 				$parts[] = '@';
 			}
-			
+
 			$parts[] = $this->host;
-			
+
 			if (! $this->port->isEmpty()) {
 				$parts[] = ':';
 				$parts[] = $this->port;
 			}
 		}
-		
+
 		if ($hasAfterPath && $this->path->isEmpty()) {
 			$parts[] = '/';
 		} else {
-			
+
 			// ensure triple slashes for file:// url
 			if ( ! $this->path->isAbsolute() && ! $this->scheme->isEmpty() && false === in_array($this->scheme->get(), ['http', 'https', 'ftp', 'sftp', 'ssh']) ) {
 				$parts[] = '/';
 			}
-			
+
 			$parts[] = $this->path;
-			
+
 		}
-		
+
 		if (! $this->query->isEmpty()) {
 			$parts[] = '?';
 			$parts[] = $this->query;
 		}
-		
+
 		if (! $this->fragment->isEmpty()) {
 			$parts[] = '#';
 			$parts[] = $this->fragment;
 		}
-		
+
 		return join('', $parts);
 	}
-	
+
 	/**
 	 *
 	 * @return Url a clone.
@@ -681,7 +698,7 @@ class Url
 	{
 		return clone $this;
 	}
-	
+
 	public function __clone()
 	{
 		$this->scheme = clone $this->scheme;
